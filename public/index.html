@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Seat Lock 🚀</title>
+
+  <style>
+    body{
+      font-family:Arial;
+      background:#383a3d;
+      color:white;
+      text-align:center;
+    }
+
+    /* Legend */
+    .legend{
+      display:flex;
+      justify-content:center;
+      gap:25px;
+      margin-top:15px;
+      font-size:14px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      display:inline-block;
+    }
+
+    .available-dot{ background:green; }
+    .booked-dot{ background:red; }
+    .already-dot{ background:yellow; }
+
+    /* Bus Seat Layout */
+    .seat-container{
+      display:grid;
+      grid-template-columns:repeat(4,80px);
+      gap:20px;
+      justify-content:center;
+      margin-top:40px;
+    }
+
+    .seat{
+      height:70px;
+      background:green;
+      border-radius:12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      transition:0.3s;
+      font-weight:bold;
+    }
+
+    .seat:hover{
+      transform:scale(1.1);
+    }
+
+    .booked{
+      background:red !important;
+    }
+
+    .already{
+      background:yellow !important;
+      color:black;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Seat Booking</h1>
+
+<!-- Legend Bullets -->
+<div class="legend">
+  <div class="legend-item"><span class="dot available-dot"></span> Available</div>
+  <div class="legend-item"><span class="dot booked-dot"></span> Booked</div>
+  <div class="legend-item"><span class="dot already-dot"></span> Already Booked</div>
+</div>
+
+<div class="seat-container" id="seats"></div>
+
+<script>
+
+const seats = ['A1','A2','A3','B1','B2','B3','C1','C2'];
+const container = document.getElementById("seats");
+
+seats.forEach(seat => {
+
+  const card = document.createElement("div");
+  card.className = "seat";
+  card.innerHTML = `
+    <div>${seat}</div>
+    <small class="status">Available 🟢</small>
+  `;
+
+  card.onclick = async () => {
+
+    if(card.classList.contains("booked")){
+      alert("Already Booked ❌");
+      return;
+    }
+
+    try{
+      const res = await fetch(`http://localhost:3000/api/book/${seat}`,{
+        method:"POST"
+      });
+
+      const data = await res.json();
+
+      alert(data.message);
+
+      if(res.status === 200){
+        card.classList.add("booked");
+        card.querySelector(".status").innerText = "Booked 🔴";
+      }
+
+      if(res.status === 400){
+        card.classList.add("already");
+        card.querySelector(".status").innerText = "Already Booked 🟡";
+      }
+
+    }catch(err){
+      console.log("Error:", err);
+    }
+
+  };
+
+  container.appendChild(card);
+
+});
+
+</script>
+
+</body>
+</html>
