@@ -29,10 +29,7 @@ const bookSeatService = async (seatId) => {
 
     bookSeat(seatId);
 
-    return {
-      status: 200,
-      message: `Seat ${seatId} booked successfully`
-    };
+    return { status: 200, message: "Seat booked successfully" };
 
   } finally {
     await releaseLock(lockKey, lockValue);
@@ -40,3 +37,4 @@ const bookSeatService = async (seatId) => {
 };
 
 export { bookSeatService };
+
