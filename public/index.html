@@ -87,47 +87,39 @@
 <script>
 
 const seats = ['A1','A2','A3','B1','B2','B3','C1','C2'];
+
+// seats already booked when page loads
+const alreadyBooked = ['A2','B3'];
+
 const container = document.getElementById("seats");
 
 seats.forEach(seat => {
 
   const card = document.createElement("div");
   card.className = "seat";
+
   card.innerHTML = `
     <div>${seat}</div>
     <small class="status">Available 🟢</small>
   `;
 
-  card.onclick = async () => {
+  // mark already booked seats
+  if(alreadyBooked.includes(seat)){
+    card.classList.add("already");
+    card.querySelector(".status").innerText = "Already Booked 🟡";
+  }
 
-    if(card.classList.contains("booked")){
+  card.onclick = () => {
+
+    if(card.classList.contains("booked") || card.classList.contains("already")){
       alert("Already Booked ❌");
       return;
     }
 
-    try{
+    alert(`Seat ${seat} booked successfully`);
 
-      const res = await fetch(`/api/book/${seat}`,{
-        method:"POST"
-      });
-
-      const data = await res.json();
-
-      alert(data.message);
-
-      if(res.status === 200){
-        card.classList.add("booked");
-        card.querySelector(".status").innerText = "Booked 🔴";
-      }
-
-      if(res.status === 400){
-        card.classList.add("already");
-        card.querySelector(".status").innerText = "Already Booked 🟡";
-      }
-
-    }catch(err){
-      console.log("Error:", err);
-    }
+    card.classList.add("booked");
+    card.querySelector(".status").innerText = "Booked 🔴";
 
   };
 
@@ -136,6 +128,5 @@ seats.forEach(seat => {
 });
 
 </script>
-
 </body>
 </html>
