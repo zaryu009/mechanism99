@@ -11,7 +11,6 @@
       text-align:center;
     }
 
-    /* Legend */
     .legend{
       display:flex;
       justify-content:center;
@@ -37,7 +36,6 @@
     .booked-dot{ background:red; }
     .already-dot{ background:yellow; }
 
-    /* Bus Seat Layout */
     .seat-container{
       display:grid;
       grid-template-columns:repeat(4,80px);
@@ -78,7 +76,6 @@
 
 <h1>Seat Booking</h1>
 
-<!-- Legend Bullets -->
 <div class="legend">
   <div class="legend-item"><span class="dot available-dot"></span> Available</div>
   <div class="legend-item"><span class="dot booked-dot"></span> Booked</div>
@@ -109,7 +106,8 @@ seats.forEach(seat => {
     }
 
     try{
-      const res = await fetch(`http://localhost:3000/api/book/${seat}`,{
+
+      const res = await fetch(`/api/book/${seat}`,{
         method:"POST"
       });
 
