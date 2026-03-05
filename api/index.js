@@ -1,17 +1,27 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import app from "../src/app.js";
 import { connectRedis } from "../src/config/redis.js";
 
-let redisConnected = false;
+let redisReady = false;
 
 export default async function handler(req, res) {
 
-  if (!redisConnected) {
-    await connectRedis();
-    redisConnected = true;
+  try {
+
+    if (!redisReady) {
+      await connectRedis();
+      redisReady = true;
+    }
+
+    return app(req, res);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
   }
 
-  return app(req, res);
 }
