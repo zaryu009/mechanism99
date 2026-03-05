@@ -1,19 +1,28 @@
 fetch(`/api/book/${seatId}`, {
   method: "POST"
 })
-.then(res => res.json())
-.then(data => {
+.then(async (res) => {
 
-   alert(data.message);
+  const text = await res.text();
 
-   if (data.message === "Seat booked successfully") {
-       seatElement.classList.remove("available");
-       seatElement.classList.add("booked");
-   }
+  try {
+    const data = JSON.parse(text);
 
-   if (data.message === "Already booked") {
-       seatElement.classList.remove("booked");
-       seatElement.classList.add("yellow");
-   }
+    alert(data.message);
 
-});
+    if (data.message.includes("booked successfully")) {
+      seatElement.classList.remove("available");
+      seatElement.classList.add("booked");
+    }
+
+    if (data.message.includes("already booked")) {
+      seatElement.classList.remove("booked");
+      seatElement.classList.add("yellow");
+    }
+
+  } catch (err) {
+    console.error("Server returned non JSON:", text);
+  }
+
+})
+.catch(err => console.error("Fetch error:", err));
